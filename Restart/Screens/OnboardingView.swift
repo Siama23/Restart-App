@@ -11,6 +11,10 @@ struct OnboardingView: View {
     // MARK: - PROPERTY
     
     @AppStorage("onboarding") var isOnboardingViewActive: Bool = true
+    //this property is the actual screen width - 80 bc the width depends on the device. There will be 40 points added on the right and left edges. This basically establishes constraints for the button horizontal movement.
+    @State private var buttonWidth: Double = UIScreen.main.bounds.width - 80
+    @State private var buttonOffset: CGFloat = 0
+    @State private var isAnimating: Bool = false
     
     // MARK : - BODY
     
@@ -19,7 +23,7 @@ struct OnboardingView: View {
             Color("ColorBlue")
                 .ignoresSafeArea(.all, edges: .all)
             VStack(spacing: 20) {
-                // MARK - HEADER
+                // MARK: - HEADER
                 
                 Spacer()
                 
@@ -38,9 +42,9 @@ struct OnboardingView: View {
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 10)
-                }
+                } //: HEADER
                 
-                // MARK - CENTER
+                // MARK: - CENTER
                 
                 ZStack {
                     CircleGroupView(ShapeColor: .white, ShapeOpacity: 0.2)
@@ -53,7 +57,7 @@ struct OnboardingView: View {
                 
                  Spacer()
                 
-                // MARK - FOOTER
+                // MARK: - FOOTER
                 
                 ZStack {
                     //PARTS OF THE CUSTOM BUTTON
@@ -77,7 +81,7 @@ struct OnboardingView: View {
                     HStack {
                         Capsule()
                             .fill(Color("ColorRed"))
-                            .frame(width: 80)
+                            .frame(width: buttonOffset + 80)
                         
                         Spacer()
                     }
@@ -95,22 +99,40 @@ struct OnboardingView: View {
                         }
                         .foregroundColor(.white)
                         .frame(width: 80, height: 80, alignment: .center)
-                        .onTapGesture {
-                            isOnboardingViewActive = false
-                        }
+                        .offset(x: buttonOffset)
+                        .gesture(
+                            DragGesture()
+                                .onChanged{ gesture in
+                                    if gesture.translation.width > 0 && buttonOffset <= buttonWidth - 80 {
+                                        buttonOffset = gesture.translation.width
+                                    }
+                                }
+                                .onEnded{ _ in
+                                    if buttonOffset > buttonWidth / 2 {
+                                        buttonOffset = buttonWidth - 80
+                                        isOnboardingViewActive = false
+                                    } else {
+                                        buttonOffset = 0
+                                    }
+                                }
+                        ) //: GESTURE
                         
                         Spacer()
                     } //: HSTACK
                 } //: FOOTER
-                .frame(height: 80, alignment: .center)
+                .frame(width: buttonWidth, height: 80, alignment: .center)
                 .padding()
             } //: VSTACK
         } //: ZSTACK
+        .onAppear(perform: {
+            isAnimating = true
+        })
     }
 }
 
+// MARK: - PREVIEW
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView()
     }
-}
+} //: PREVIEW
