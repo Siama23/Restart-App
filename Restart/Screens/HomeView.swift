@@ -15,10 +15,13 @@ struct HomeView: View {
             
             Spacer()
             
-            Image("character-2")
-                .resizable()
-                .scaledToFit()
+            ZStack {
+                CircleGroupView(ShapeColor: .gray, ShapeOpacity: 0.1)
+                Image("character-2")
+                    .resizable()
+                    .scaledToFit()
                 .padding()
+            }
             // MARK - CENTER
             
             Text("The time that leads to mastery is dependent on the intensity of our focus.")
@@ -42,25 +45,6 @@ struct HomeView: View {
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
             .controlSize(.large)
-//            ZStack {
-//                ZStack {
-//                    Circle()
-//                        .stroke(.black.opacity(0.05), lineWidth: 40)
-//                        .frame(width: 260, height: 260, alignment: .center)
-//                    Circle()
-//                        .stroke(.black.opacity(0.05), lineWidth: 80)
-//                        .frame(width: 260, height: 260, alignment: .center)
-//                }
-//                Image("character-2")
-//                    .resizable()
-//                    .scaledToFit()
-//            }
-//            Button(action:{
-//                isOnboardingViewActive = true
-//            }) {
-//                Text("Restart")
-//            }
-//        } //: VSTACK
     }
 }
 
